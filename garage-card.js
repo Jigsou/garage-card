@@ -1,7 +1,7 @@
 /**
  * Garage Card - Top-Down View
  * A custom Home Assistant Lovelace card for garage visualization
- * v1.4.0 - Assets embedded as base64 for HACS compatibility
+ * v1.4.1 - Assets embedded as base64 for HACS compatibility
  */
 
 const GARAGE_EMBEDDED_ASSETS = {
@@ -64,8 +64,9 @@ class GarageCard extends HTMLElement {
   }
 
   _getAssetSrc(filename) {
-    if (this._config.assets_path) {
-      return `${this._config.assets_path}/${filename}`;
+    const path = this._config.assets_path;
+    if (path && path !== '/local/garage-card/assets') {
+      return `${path}/${filename}`;
     }
     return GARAGE_EMBEDDED_ASSETS[filename] || '';
   }
@@ -679,7 +680,7 @@ window.customCards.push({
   preview: true
 });
 
-console.info('%c GARAGE-CARD %c v1.4.0 ',
+console.info('%c GARAGE-CARD %c v1.4.1 ',
   'color: white; background: #4A90D9; font-weight: bold;',
   'color: #4A90D9; background: white; font-weight: bold;'
 );
