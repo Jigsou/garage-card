@@ -50,19 +50,9 @@ Or manually: open HACS, search for "Garage Card", click Install, and restart Hom
 
 ### Assets
 
-The card ships with default assets in the `assets/` folder. After installing, copy the `assets/` folder to `config/www/garage-card/` so the images are accessible at `/local/garage-card/assets/`.
+As of v1.4, the default garage and car images (garage base, door overlay, car 1, car 2) are **embedded directly in `garage-card.js`**. No separate asset files need to be copied — the card works immediately after installation via HACS or manual download.
 
-The default assets include images for 2 cars. If you configure a 3rd car, you'll need to create a `car-3.png` asset (see [Creating Custom Assets](#creating-custom-assets) below).
-
-| File | Size | Format | Description |
-|------|------|--------|-------------|
-| `garage-base.png` | 800x700px | PNG, transparent background | Top-down view of the garage floor/walls (always visible) |
-| `garage-door-closed.png` | 800x700px | PNG, transparent background | Garage door overlay (fades out when door opens) |
-| `car-1.png` | 800x700px | PNG, transparent background | Car 1 image positioned in its parking spot |
-| `car-2.png` | 800x700px | PNG, transparent background | Car 2 image positioned in its parking spot |
-| `car-3.png` | 800x700px | PNG, transparent background | Car 3 image — only needed if you configure a 3rd car |
-
-All images must be the same dimensions so they layer correctly. The card stacks them in order: base → cars → door.
+If you want to use **custom images** (your own garage, your own cars, a 3rd car), set the `assets_path` config option to point to a folder you create in `config/www/` (see [Creating Custom Assets](#creating-custom-assets) below).
 
 ## Configuration
 
@@ -89,8 +79,9 @@ keep_open_entity: input_boolean.keep_garage_door_open
 | `car3_presence_entity` | string | No | — | Binary sensor for car 3 presence |
 | `light_entity` | string | No | — | Garage light entity (enables light button and dimming effect) |
 | `keep_open_entity` | string | No | — | An `input_boolean` helper you create and use in your own automations (e.g., to prevent auto-close). The card provides a toggle for it — the logic is up to you. |
+| `assets_path` | string | No | — | Path to custom image assets (e.g., `/local/garage-card/assets`). When omitted, the card uses its built-in embedded images. Only set this if you want to use your own custom images. |
 
-Only configured cars are rendered. If you set `car1_presence_entity` and `car2_presence_entity` but leave `car3_presence_entity` empty, the card shows 2 cars. Each car slot maps to an asset image: car 1 → `car-1.png`, car 2 → `car-2.png`, car 3 → `car-3.png`.
+Only configured cars are rendered. If you set `car1_presence_entity` and `car2_presence_entity` but leave `car3_presence_entity` empty, the card shows 2 cars. Each car slot maps to an asset image: car 1 → `car-1.png`, car 2 → `car-2.png`, car 3 → `car-3.png`. The built-in images include car 1 and car 2 — if you configure a 3rd car, you'll need to provide custom assets via `assets_path`.
 
 ## Example Setup
 
@@ -154,9 +145,20 @@ Tips:
 - Generate one car per image — the card layers them independently.
 - Name your files `car-1.png`, `car-2.png`, `car-3.png` to match the car slots in the config. Only create images for the cars you've configured.
 
-### Replace the Files
+### Using Custom Assets
 
-Drop your new images into the `assets/` folder using the same filenames (`garage-base.png`, `garage-door-closed.png`, `car-1.png`, `car-2.png`, `car-3.png`), and the card will use them automatically.
+1. Create a folder in your Home Assistant config, e.g. `config/www/garage-card/assets/`
+2. Place your custom images there using the expected filenames: `garage-base.png`, `garage-door-closed.png`, `car-1.png`, `car-2.png`, `car-3.png`
+3. Set `assets_path` in your card config to point to that folder:
+
+```yaml
+type: custom:garage-card
+name: Garage
+door_entity: cover.garage_door
+assets_path: /local/garage-card/assets
+```
+
+When `assets_path` is set, the card loads images from that path instead of using the built-in embedded defaults.
 
 ## Companion Blueprints
 
